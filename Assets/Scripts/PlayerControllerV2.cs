@@ -14,11 +14,12 @@ public class PlayerControllerV2 : MonoBehaviour
     public AudioClip winningMusic;
     public bool Alive = true;
     public bool isWin = false;
-    private Vector2 KeyboardMovement;
-    private Vector2 MouseMovement;
+    private Vector2 Movement;
     private float xRotation;
     private bool CamTrigger = false;
     private AudioSource sound;
+    private bool isStopped;
+    private float Rotation;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,8 @@ public class PlayerControllerV2 : MonoBehaviour
         sound.clip = backgroundMusic;
         sound.volume = 0.5f;
         sound.Play();
+        Movement = new Vector2(1, 0);
+        isStopped = false;
     }
 
     // Update is called once per frame
@@ -53,8 +56,6 @@ public class PlayerControllerV2 : MonoBehaviour
 
     void GetInput()
     {
-        KeyboardMovement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        MouseMovement = new Vector2(Input.GetAxis("Mouse X") * MouseSensitivity * Time.deltaTime, Input.GetAxis("Mouse Y") * MouseSensitivity * Time.deltaTime);
         if (Input.GetKeyDown(KeyCode.F5))
         {
             CamTrigger = !CamTrigger;
@@ -69,6 +70,12 @@ public class PlayerControllerV2 : MonoBehaviour
     void PlayerMove()
     {
         if (!Alive || isWin) return;
+        if (isStopped)
+        {
+            GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            return;
+        }
+        Vector3 velocity = (transform.forward * Movement.x * MovementSpeed + transform.right * Movement.y * MovementSpeed);
         if (TPSCamera.enabled)
         {
             Vector3 CamToPlayer = TPSCamera.transform.position - transform.position;
@@ -76,40 +83,59 @@ public class PlayerControllerV2 : MonoBehaviour
             CamToPlayer.Set(CamToPlayer.x, 0f, CamToPlayer.z);
             CamToPlayer.Normalize();
             Debug.DrawLine(TPSCamera.transform.position, CamToPlayer, Color.green);
-
-            Vector3 velocity = CamToPlayer * KeyboardMovement.y * MovementSpeed + Quaternion.Euler(0f, 90f, 0) * CamToPlayer * KeyboardMovement.x * MovementSpeed;
-
+            // velocity = CamToPlayer * Movement.y * MovementSpeed + Quaternion.Euler(0f, 90f, 0) * CamToPlayer * Movement.x * MovementSpeed;
+        
             if (velocity.magnitude >= 0.1f)
             {
-                Quaternion dirQ = Quaternion.LookRotation(velocity);
+                Quaternion dirQ = Quaternion.Euler(new Vector3(0, Rotation, 0));
+                Debug.Log(Rotation + ", " + dirQ);
                 Quaternion slerp = Quaternion.Slerp(transform.rotation, dirQ, velocity.magnitude * 4f * Time.deltaTime);
                 GetComponent<Rigidbody>().MoveRotation(slerp);
             }
-            velocity.y = GetComponent<Rigidbody>().velocity.y;
-            GetComponent<Rigidbody>().velocity = velocity;
         }
-        else
-        {
-            xRotation -= MouseMovement.y;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-            FPSCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-            transform.Rotate(Vector3.up * MouseMovement.x);
-            Vector3 velocity = transform.forward * KeyboardMovement.y * MovementSpeed + transform.right * KeyboardMovement.x * MovementSpeed;
-            velocity.y = GetComponent<Rigidbody>().velocity.y;
-            GetComponent<Rigidbody>().velocity = velocity;
-        }
+        velocity.y = GetComponent<Rigidbody>().velocity.y;
+        GetComponent<Rigidbody>().velocity = velocity;
+        // if (TPSCamera.enabled)
+        // {
+        //     Vector3 CamToPlayer = TPSCamera.transform.position - transform.position;
+        //     CamToPlayer *= -1;
+        //     CamToPlayer.Set(CamToPlayer.x, 0f, CamToPlayer.z);
+        //     CamToPlayer.Normalize();
+        //     Debug.DrawLine(TPSCamera.transform.position, CamToPlayer, Color.green);
+        // 
+        //     Vector3 velocity = CamToPlayer * KeyboardMovement.y * MovementSpeed + Quaternion.Euler(0f, 90f, 0) * CamToPlayer * KeyboardMovement.x * MovementSpeed;
+        // 
+        //     if (velocity.magnitude >= 0.1f)
+        //     {
+        //         Quaternion dirQ = Quaternion.LookRotation(velocity);
+        //         Quaternion slerp = Quaternion.Slerp(transform.rotation, dirQ, velocity.magnitude * 4f * Time.deltaTime);
+        //         GetComponent<Rigidbody>().MoveRotation(slerp);
+        //     }
+        //     velocity.y = GetComponent<Rigidbody>().velocity.y;
+        //     GetComponent<Rigidbody>().velocity = velocity;
+        // }
+        // else
+        // {
+        //     xRotation -= MouseMovement.y;
+        //     xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        // 
+        //     FPSCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        //     transform.Rotate(Vector3.up * MouseMovement.x);
+        //     Vector3 velocity = transform.forward * KeyboardMovement.y * MovementSpeed + transform.right * KeyboardMovement.x * MovementSpeed;
+        //     velocity.y = GetComponent<Rigidbody>().velocity.y;
+        //     GetComponent<Rigidbody>().velocity = velocity;
+        // }
     }
 
     void AnimationSet()
     {
-        float a = KeyboardMovement.magnitude;
+        float a = isStopped ? 0 : Movement.magnitude;
         if (TPSCamera.enabled) anim.SetFloat("MovingSpeed", a);
     }
 
     void FootStepSound()
     {
-        if(KeyboardMovement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin)
+        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin)
         {
             audioData.Play();
         }
@@ -117,7 +143,7 @@ public class PlayerControllerV2 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Spike" && Alive)
+        if (other.tag == "Spike" && Alive)
         {
             anim.SetTrigger("Death");
             Alive = !Alive;
@@ -126,7 +152,36 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             Win();
         }
+        else if (other.tag == "StopArea")
+        {
+            isStopped = true;
+        }
+        else if (other.tag == "MovementPosX")
+        {
+            Rotation = 90;
+        }
+        else if (other.tag == "MovementNegX")
+        {
+            Rotation = -90;
+        }
+        else if (other.tag == "MovementPosY")
+        {
+            Rotation = 0;
+        }
+        else if (other.tag == "MovementNegY")
+        {
+            Rotation = 180;
+        }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "StopArea")
+        {
+            isStopped = false;
+        }
+    }
+
 
     public void Respawn()
     {
