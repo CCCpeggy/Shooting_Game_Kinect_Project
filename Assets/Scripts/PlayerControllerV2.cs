@@ -56,6 +56,7 @@ public class PlayerControllerV2 : MonoBehaviour
         if (TPSCamera.enabled)
         {
             begin = transform.position;
+            begin = TPSCamera.transform.position;
             camera = TPSCamera;
         }
         else
@@ -63,17 +64,15 @@ public class PlayerControllerV2 : MonoBehaviour
             begin = FPSCamera.transform.position;
             camera = FPSCamera;
         }
-        Vector3 end = camera.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 50);
+        Vector3 end = camera.ScreenToWorldPoint(mousePosition);
         Ray ray = new Ray(begin, end);
-        Debug.Log(begin + ", " + end);
-        RaycastHit hit;
-        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit))
+        RaycastHit hit;// = Physics.RaycastAll(ray, 50, 13);
+        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 13))
         {
             Debug.DrawLine(begin, end, Color.red, 0.1f, true);
-            if (hit.transform.tag == "Plank")
-            {
-                Destroy(hit.transform.gameObject);
-            }
+            Debug.Log(hit.transform.tag);
+            Destroy(hit.transform.gameObject);
         }
     }
 
@@ -96,6 +95,7 @@ public class PlayerControllerV2 : MonoBehaviour
         if (isStopped)
         {
             GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            isStopped = false; ;
             return;
         }
         Vector3 velocity = (transform.forward * Movement.x * MovementSpeed + transform.right * Movement.y * MovementSpeed);
@@ -174,10 +174,6 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             Win();
         }
-        else if (other.tag == "StopArea")
-        {
-            isStopped = true;
-        }
         else if (other.tag == "MovementPosX")
         {
             Rotation = 90;
@@ -196,11 +192,11 @@ public class PlayerControllerV2 : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.tag == "StopArea")
         {
-            isStopped = false;
+            isStopped = true;
         }
     }
 

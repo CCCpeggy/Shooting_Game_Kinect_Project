@@ -87,9 +87,9 @@ GameObject:
   m_Component:
   - component: {fileID: 447408}
   - component: {fileID: 8186786433591372314}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: fbPlankBridge 1
-  m_TagString: Untagged
+  m_TagString: Plank
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

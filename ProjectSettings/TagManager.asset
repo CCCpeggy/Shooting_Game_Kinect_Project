@@ -12,6 +12,7 @@ TagManager:
   - MovementNegX
   - MovementPosY
   - MovementNegY
+  - Plank
   layers:
   - Default
   - TransparentFX
@@ -26,7 +27,7 @@ TagManager:
   - Minimap
   - Not For Minimap
   - Post Processing
-  - 
+  - Target
   - 
   - 
   - 
