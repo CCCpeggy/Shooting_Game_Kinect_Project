@@ -24,8 +24,8 @@ public class PlayerControllerV2 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
         sound = GameObject.Find("ThirdPersonCam").GetComponent<AudioSource>();
         sound.clip = backgroundMusic;
         sound.volume = 0.5f;
@@ -46,11 +46,39 @@ public class PlayerControllerV2 : MonoBehaviour
             TPSCamera.enabled = !TPSCamera.enabled;
             CamTrigger = !CamTrigger;
         }
+        Shooting();
+    }
+
+    private void Shooting()
+    {
+        Vector3 begin;
+        Camera camera;
+        if (TPSCamera.enabled)
+        {
+            begin = transform.position;
+            camera = TPSCamera;
+        }
+        else
+        {
+            begin = FPSCamera.transform.position;
+            camera = FPSCamera;
+        }
+        Vector3 end = camera.ScreenToWorldPoint(Input.mousePosition);
+        Ray ray = new Ray(begin, end);
+        Debug.Log(begin + ", " + end);
+        RaycastHit hit;
+        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit))
+        {
+            Debug.DrawLine(begin, end, Color.red, 0.1f, true);
+            if (hit.transform.tag == "Plank")
+            {
+                Destroy(hit.transform.gameObject);
+            }
+        }
     }
 
     private void FixedUpdate()
     {
-        TPSCam();
         PlayerMove();
     }
 
@@ -60,11 +88,6 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             CamTrigger = !CamTrigger;
         }
-    }
-
-    void TPSCam()
-    {
-
     }
 
     void PlayerMove()

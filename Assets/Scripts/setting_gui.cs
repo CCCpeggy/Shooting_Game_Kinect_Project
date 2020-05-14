@@ -58,8 +58,8 @@ public class setting_gui : MonoBehaviour
         {
             AudioListener.volume = 0;
             Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
             showUI();
         }
         else
@@ -67,8 +67,8 @@ public class setting_gui : MonoBehaviour
             //unpause the game
             Time.timeScale = 1;
             AudioListener.volume = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
             showUI();
         }
         if (doCountDown && !menuShow && !pauseEnabled)
