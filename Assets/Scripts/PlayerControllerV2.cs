@@ -107,14 +107,13 @@ public class PlayerControllerV2 : MonoBehaviour
             CamToPlayer.Normalize();
             Debug.DrawLine(TPSCamera.transform.position, CamToPlayer, Color.green);
             // velocity = CamToPlayer * Movement.y * MovementSpeed + Quaternion.Euler(0f, 90f, 0) * CamToPlayer * Movement.x * MovementSpeed;
-        
-            if (velocity.magnitude >= 0.1f)
-            {
-                Quaternion dirQ = Quaternion.Euler(new Vector3(0, Rotation, 0));
-                Debug.Log(Rotation + ", " + dirQ);
-                Quaternion slerp = Quaternion.Slerp(transform.rotation, dirQ, velocity.magnitude * 4f * Time.deltaTime);
-                GetComponent<Rigidbody>().MoveRotation(slerp);
-            }
+        }
+        if (velocity.magnitude >= 0.1f)
+        {
+            Quaternion dirQ = Quaternion.Euler(new Vector3(0, Rotation, 0));
+            Debug.Log(Rotation + ", " + dirQ);
+            Quaternion slerp = Quaternion.Slerp(transform.rotation, dirQ, velocity.magnitude * 4f * Time.deltaTime);
+            GetComponent<Rigidbody>().MoveRotation(slerp);
         }
         velocity.y = GetComponent<Rigidbody>().velocity.y;
         GetComponent<Rigidbody>().velocity = velocity;
