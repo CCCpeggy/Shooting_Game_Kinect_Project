@@ -15,6 +15,7 @@ public class PlayerControllerV2 : MonoBehaviour
     public bool Alive = true;
     public bool isWin = false;
     public GameObject Cinemachine;
+    private bool isStoppedTrigger;
     public bool isStopped;
     private Vector2 Movement;
     private float xRotation;
@@ -32,7 +33,7 @@ public class PlayerControllerV2 : MonoBehaviour
         sound.volume = 0.5f;
         sound.Play();
         Movement = new Vector2(1, 0);
-        isStopped = false;
+        isStoppedTrigger = false;
     }
 
     // Update is called once per frame
@@ -48,7 +49,7 @@ public class PlayerControllerV2 : MonoBehaviour
             CamTrigger = !CamTrigger;
         }
         Cursor.lockState = CursorLockMode.Locked;
-        if (isStopped)
+        if (isStoppedTrigger)
         {
             Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
         }
@@ -102,12 +103,14 @@ public class PlayerControllerV2 : MonoBehaviour
     void PlayerMove()
     {
         if (!Alive || isWin) return;
-        if (isStopped)
+        if (isStoppedTrigger)
         {
+            isStopped = true;
             GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            isStopped = false; ;
+            isStoppedTrigger = false;
             return;
         }
+        isStopped = false;
         Vector3 velocity = (transform.forward * Movement.x * MovementSpeed + transform.right * Movement.y * MovementSpeed);
         if (TPSCamera.enabled)
         {
@@ -161,13 +164,13 @@ public class PlayerControllerV2 : MonoBehaviour
 
     void AnimationSet()
     {
-        float a = isStopped ? 0 : Movement.magnitude;
+        float a = isStoppedTrigger ? 0 : Movement.magnitude;
         if (TPSCamera.enabled) anim.SetFloat("MovingSpeed", a);
     }
 
     void FootStepSound()
     {
-        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin && !isStopped)
+        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin && !isStoppedTrigger)
         {
             audioData.Play();
         }
@@ -206,7 +209,7 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         if (other.tag == "StopArea")
         {
-            isStopped = true;
+            isStoppedTrigger = true;
         }
     }
 

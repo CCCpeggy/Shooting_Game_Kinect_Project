@@ -137,7 +137,7 @@ public class BodySource : MonoBehaviour
                 }
             } else if (jt == JointType.HandRight)
             {
-                if (body.HandRightState == HandState.Closed)
+                if (body.HandRightState == HandState.Closed && FindObjectOfType<PlayerControllerV2>().isStopped)
                 {
                     Debug.Log(jt.ToString() + " right hand is closed.");
                     FindObjectOfType<PlayerControllerV2>().Shooting();
