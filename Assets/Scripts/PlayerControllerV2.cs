@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using Cinemachine;
-using AudioSource = UnityEngine.AudioSource;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerControllerV2 : MonoBehaviour
 {
@@ -14,12 +14,11 @@ public class PlayerControllerV2 : MonoBehaviour
     public AudioClip winningMusic;
     public bool Alive = true;
     public bool isWin = false;
-    public GameObject Cinemachine;
-    public bool isStopped;
     private Vector2 Movement;
     private float xRotation;
     private bool CamTrigger = false;
     private AudioSource sound;
+    private bool isStopped;
     private float Rotation;
 
     // Start is called before the first frame update
@@ -47,19 +46,10 @@ public class PlayerControllerV2 : MonoBehaviour
             TPSCamera.enabled = !TPSCamera.enabled;
             CamTrigger = !CamTrigger;
         }
-        Cursor.lockState = CursorLockMode.Locked;
-        if (isStopped)
-        {
-            Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
-        }
-        else
-        {
-            Cinemachine.GetComponent<CinemachineFreeLook>().enabled = true;
-        }
-        //Shooting();
+        Shooting();
     }
 
-    public void Shooting()
+    private void Shooting()
     {
         Vector3 begin;
         Camera camera;
@@ -78,7 +68,7 @@ public class PlayerControllerV2 : MonoBehaviour
         Vector3 end = camera.ScreenToWorldPoint(mousePosition);
         Ray ray = new Ray(begin, end);
         RaycastHit hit;// = Physics.RaycastAll(ray, 50, 13);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 13))
+        if (Input.GetMouseButton(0) && Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 13))
         {
             Debug.DrawLine(begin, end, Color.red, 0.1f, true);
             Debug.Log(hit.transform.tag);
@@ -121,7 +111,7 @@ public class PlayerControllerV2 : MonoBehaviour
         if (velocity.magnitude >= 0.1f)
         {
             Quaternion dirQ = Quaternion.Euler(new Vector3(0, Rotation, 0));
-            //Debug.Log(Rotation + ", " + dirQ);
+            Debug.Log(Rotation + ", " + dirQ);
             Quaternion slerp = Quaternion.Slerp(transform.rotation, dirQ, velocity.magnitude * 4f * Time.deltaTime);
             GetComponent<Rigidbody>().MoveRotation(slerp);
         }
@@ -167,7 +157,7 @@ public class PlayerControllerV2 : MonoBehaviour
 
     void FootStepSound()
     {
-        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin && !isStopped)
+        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin)
         {
             audioData.Play();
         }
