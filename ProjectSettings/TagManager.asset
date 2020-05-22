@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Collide
+  - Spike
+  - Chest
+  - StopArea
+  - MovementPosX
+  - MovementNegX
+  - MovementPosY
+  - MovementNegY
+  - Plank
   layers:
   - Default
   - TransparentFX
@@ -14,11 +23,11 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Minimap
+  - Not For Minimap
+  - Post Processing
+  - Target
   - 
   - 
   - 
