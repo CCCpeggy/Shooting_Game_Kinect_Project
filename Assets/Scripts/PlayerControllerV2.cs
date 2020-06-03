@@ -15,13 +15,13 @@ public class PlayerControllerV2 : MonoBehaviour
     public bool Alive = true;
     public bool isWin = false;
     public GameObject Cinemachine;
-    private bool isStoppedTrigger;
     public bool isStopped;
     private Vector2 Movement;
     private float xRotation;
     private bool CamTrigger = false;
     private AudioSource sound;
     private float Rotation;
+    public GameObject[] StopArea = new GameObject[4];
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +33,6 @@ public class PlayerControllerV2 : MonoBehaviour
         sound.volume = 0.5f;
         sound.Play();
         Movement = new Vector2(1, 0);
-        isStoppedTrigger = false;
     }
 
     // Update is called once per frame
@@ -49,7 +48,15 @@ public class PlayerControllerV2 : MonoBehaviour
             CamTrigger = !CamTrigger;
         }
         Cursor.lockState = CursorLockMode.Locked;
-        if (isStoppedTrigger)
+
+
+        isStopped = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (StopArea[i].GetComponent<StopArea>().isShooting) isStopped = true;
+        }
+
+        if (isStopped)
         {
             Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
         }
@@ -103,14 +110,11 @@ public class PlayerControllerV2 : MonoBehaviour
     void PlayerMove()
     {
         if (!Alive || isWin) return;
-        if (isStoppedTrigger)
+        if (isStopped)
         {
-            isStopped = true;
             GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            isStoppedTrigger = false;
             return;
         }
-        isStopped = false;
         Vector3 velocity = (transform.forward * Movement.x * MovementSpeed + transform.right * Movement.y * MovementSpeed);
         if (TPSCamera.enabled)
         {
@@ -164,26 +168,27 @@ public class PlayerControllerV2 : MonoBehaviour
 
     void AnimationSet()
     {
-        float a = isStoppedTrigger ? 0 : Movement.magnitude;
+        float a = isStopped ? 0 : Movement.magnitude;
         if (TPSCamera.enabled) anim.SetFloat("MovingSpeed", a);
     }
 
     void FootStepSound()
     {
-        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin && !isStoppedTrigger)
+        if(Movement.magnitude > 0.5f && !audioData.isPlaying && Alive && !isWin && !isStopped)
         {
             audioData.Play();
         }
     }
 
+    public void Dead()
+    {
+        anim.SetTrigger("Death");
+        Alive = !Alive;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Spike" && Alive)
-        {
-            anim.SetTrigger("Death");
-            Alive = !Alive;
-        }
-        else if (other.tag == "Chest")
+        if (other.tag == "Chest")
         {
             Win();
         }
@@ -203,13 +208,20 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             Rotation = 180;
         }
+        else if (other.tag == "Plank")
+        {
+            Dead();
+        }
+        else if (other.tag == "StopArea")
+        {
+            other.GetComponent<StopArea>().SpawnEnemy();
+        }
     }
 
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "StopArea")
         {
-            isStoppedTrigger = true;
         }
     }
 
