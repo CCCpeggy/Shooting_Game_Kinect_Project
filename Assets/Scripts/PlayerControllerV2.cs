@@ -57,16 +57,29 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             if (StopArea[i].GetComponent<StopArea>().isShooting) isStopped = true;
         }
-
+        
+        // Computer Controll
         if (isStopped)
         {
+            TPSCamera.enabled = false;
+            FPSCamera.enabled = true;
             Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
+
+            float temp = Input.GetAxis("Mouse X") * 5;
+            transform.Rotate(Vector3.up * temp);
+            temp = Input.GetAxis("Mouse Y") * -2;
+            FPSCamera.gameObject.transform.Rotate(Vector3.right * temp);
         }
         else
         {
+            FPSCamera.enabled = false;
+            TPSCamera.enabled = true;
             Cinemachine.GetComponent<CinemachineFreeLook>().enabled = true;
         }
-        //Shooting();
+        if (Input.GetMouseButtonDown(0))
+        {
+            Shooting();
+        }
     }
 
     public void Shooting()
@@ -84,15 +97,16 @@ public class PlayerControllerV2 : MonoBehaviour
             begin = FPSCamera.transform.position;
             camera = FPSCamera;
         }
-        Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 50);
-        Vector3 end = camera.ScreenToWorldPoint(mousePosition);
-        Ray ray = new Ray(begin, end);
+        Vector3 firePoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+        Ray ray = camera.ScreenPointToRay(firePoint);
         RaycastHit hit;// = Physics.RaycastAll(ray, 50, 13);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 13))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            Debug.DrawLine(begin, end, Color.red, 0.1f, true);
+            Debug.DrawLine(ray.origin, hit.point, Color.red, 0.1f, true);
+            
             Debug.Log(hit.transform.tag);
-            Destroy(hit.transform.gameObject);
+            if (hit.transform.gameObject.CompareTag("Plank"))
+                Destroy(hit.transform.gameObject);
         }
     }
 
@@ -171,7 +185,8 @@ public class PlayerControllerV2 : MonoBehaviour
     void AnimationSet()
     {
         float a = isStopped ? 0 : Movement.magnitude;
-        if (TPSCamera.enabled) anim.SetFloat("MovingSpeed", a);
+        //if (TPSCamera.enabled) anim.SetFloat("MovingSpeed", a);
+        anim.SetFloat("MovingSpeed", a);
     }
 
     void FootStepSound()

@@ -126,12 +126,16 @@ public class BodySource : MonoBehaviour
                     {
                         //LeftHandObject.transform.Rotate(Vector3.down * difference.x * rotateSensitivityY, Space.World);
                         //LeftHandObject.transform.Rotate(Vector3.right * difference.y * rotateSensitivityX, Space.Self);
+                        /*
                         Vector3 lookAtPos = PlayerObject.transform.position + Vector3.up * 1.5f;
                         LeftHandObject.transform.RotateAround(lookAtPos, Vector3.up,
                             difference.x * rotateSensitivityY);
                         LeftHandObject.transform.RotateAround(lookAtPos, Vector3.forward,
                             difference.y * rotateSensitivityX);
                         LeftHandObject.transform.LookAt(lookAtPos,Vector3.up);
+                        */
+                        PlayerObject.transform.Rotate(Vector3.up * difference.x * rotateSensitivityY);
+                        LeftHandObject.transform.Rotate(Vector3.right * difference.y * rotateSensitivityX);
                     }
                     _oldLeftHandPosition = jointObject.position;
                 }
