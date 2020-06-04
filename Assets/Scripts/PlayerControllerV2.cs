@@ -58,7 +58,7 @@ public class PlayerControllerV2 : MonoBehaviour
             if (StopArea[i].GetComponent<StopArea>().isShooting) isStopped = true;
         }
         
-        // Computer Controll
+        // Computer Control
         if (isStopped)
         {
             TPSCamera.enabled = false;
@@ -76,7 +76,7 @@ public class PlayerControllerV2 : MonoBehaviour
             TPSCamera.enabled = true;
             Cinemachine.GetComponent<CinemachineFreeLook>().enabled = true;
         }
-        if (Input.GetMouseButtonDown(0))
+        if (isStopped && Input.GetMouseButtonDown(0))
         {
             Shooting();
         }
