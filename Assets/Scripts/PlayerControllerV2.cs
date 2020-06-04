@@ -18,6 +18,8 @@ public class PlayerControllerV2 : MonoBehaviour
     public bool isStopped;
     public GameObject[] StopArea = new GameObject[4];
     public GameObject respawnHint;
+    public Transform firePoint;
+    public GameObject bullet;
     
     private Vector2 Movement;
     private float xRotation;
@@ -93,16 +95,15 @@ public class PlayerControllerV2 : MonoBehaviour
             begin = FPSCamera.transform.position;
             camera = FPSCamera;
         }
-        Vector3 firePoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
-        Ray ray = camera.ScreenPointToRay(firePoint);
+        Vector3 targetPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
+        Ray ray = camera.ScreenPointToRay(targetPoint);
         RaycastHit hit;// = Physics.RaycastAll(ray, 50, 13);
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             Debug.DrawLine(ray.origin, hit.point, Color.red, 0.1f, true);
-            
-            Debug.Log(hit.transform.tag);
-            if (hit.transform.gameObject.CompareTag("Plank"))
-                Destroy(hit.transform.gameObject);
+
+            Instantiate(bullet, firePoint.position, Quaternion.identity)
+                .gameObject.GetComponent<BulletControl>().target = hit.point;
         }
     }
 

@@ -8,6 +8,7 @@ public class ChangeCameraView : MonoBehaviour
     public Camera FPSCamera;
     public GameObject Cinemachine;
     public Image aimImage;
+    public GameObject firePoint;
 
     private Animator _animator;
     
@@ -15,12 +16,6 @@ public class ChangeCameraView : MonoBehaviour
     void Start()
     {
         _animator = gameObject.GetComponent<Animator>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ChangeToFPSAnimation()
@@ -35,6 +30,7 @@ public class ChangeCameraView : MonoBehaviour
         FPSCamera.enabled = true;
         Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
         aimImage.enabled = true;
+        firePoint.SetActive(true);
     }
     
     public void ChangeToTPSAnimation()
@@ -49,5 +45,6 @@ public class ChangeCameraView : MonoBehaviour
         FPSCamera.enabled = false;
         Cinemachine.GetComponent<CinemachineFreeLook>().enabled = true;
         aimImage.enabled = false;
+        firePoint.SetActive(false);
     }
 }

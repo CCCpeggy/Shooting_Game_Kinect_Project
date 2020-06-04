@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6609651975105708127}
   - component: {fileID: 8078241479352789284}
   m_Layer: 0
-  m_Name: FireParticles (1)
+  m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1607,7 +1607,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.5
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2
