@@ -13,7 +13,8 @@ public class Enemy : MonoBehaviour
         speed = level * Mathf.Sqrt(level) * 0.2f * Random.Range(0.8f, 1.2f);
         mForward = Vector3.forward * speed;
         Transform player = FindObjectOfType<PlayerControllerV2>().gameObject.transform;
-        gameObject.transform.LookAt(player);
+        gameObject.transform.LookAt(
+            new Vector3(player.position.x, gameObject.transform.position.y, player.position.z));
     }
 
     // Update is called once per frame
