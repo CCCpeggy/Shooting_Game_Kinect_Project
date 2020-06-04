@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    Vector3 mForward;
+    private Vector3 mForward;
     private int level = 1;
     private float speed;
     // Start is called before the first frame update
     void Start()
     {
         speed = level * Mathf.Sqrt(level) * 0.2f * Random.Range(0.8f, 1.2f);
-        mForward = new Vector3(1, 0, 0) * speed;
+        mForward = Vector3.forward * speed;
+        Transform player = FindObjectOfType<PlayerControllerV2>().gameObject.transform;
+        gameObject.transform.LookAt(player);
     }
 
     // Update is called once per frame
