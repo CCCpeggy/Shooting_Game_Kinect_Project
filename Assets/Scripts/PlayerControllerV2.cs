@@ -16,12 +16,14 @@ public class PlayerControllerV2 : MonoBehaviour
     public bool isWin = false;
     public GameObject Cinemachine;
     public bool isStopped;
+    public GameObject[] StopArea = new GameObject[4];
+    public GameObject respawnHint;
+    
     private Vector2 Movement;
     private float xRotation;
     private bool CamTrigger = false;
     private AudioSource sound;
     private float Rotation;
-    public GameObject[] StopArea = new GameObject[4];
 
     // Start is called before the first frame update
     void Start()
@@ -184,6 +186,12 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         anim.SetTrigger("Death");
         Alive = !Alive;
+    }
+
+    public void ShowRespawnHint()
+    {
+        if (respawnHint != null)
+            respawnHint.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)

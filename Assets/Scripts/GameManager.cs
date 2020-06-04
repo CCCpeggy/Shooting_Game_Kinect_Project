@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
         Respawn();
         if(!pc.Alive && !respawnHint.activeSelf)
         {
-            respawnHint.SetActive(true);
+            //respawnHint.SetActive(true);
             GameObject.Find("Canvas").GetComponent<setting_gui>().endCount();
         }
         
