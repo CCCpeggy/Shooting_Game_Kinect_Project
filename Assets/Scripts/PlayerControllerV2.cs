@@ -61,9 +61,7 @@ public class PlayerControllerV2 : MonoBehaviour
         // Computer Control
         if (isStopped)
         {
-            TPSCamera.enabled = false;
-            FPSCamera.enabled = true;
-            Cinemachine.GetComponent<CinemachineFreeLook>().enabled = false;
+            FindObjectOfType<ChangeCameraView>().ChangeToFPSAnimation();
 
             float temp = Input.GetAxis("Mouse X") * 5;
             transform.Rotate(Vector3.up * temp);
@@ -72,9 +70,7 @@ public class PlayerControllerV2 : MonoBehaviour
         }
         else
         {
-            FPSCamera.enabled = false;
-            TPSCamera.enabled = true;
-            Cinemachine.GetComponent<CinemachineFreeLook>().enabled = true;
+            FindObjectOfType<ChangeCameraView>().ChangeToTPSAnimation();
         }
         if (isStopped && Input.GetMouseButtonDown(0))
         {

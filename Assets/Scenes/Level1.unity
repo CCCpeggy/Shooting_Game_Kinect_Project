@@ -343,6 +343,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2027994879}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &97773439 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 303037049647767492, guid: 83011aa6e2002bd4ba5b30ddd1467d0f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2027994879}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &97773441 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 303037049647767490, guid: 83011aa6e2002bd4ba5b30ddd1467d0f,
@@ -3743,7 +3749,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 909840384}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
@@ -6139,6 +6145,7 @@ GameObject:
   - component: {fileID: 1413401287}
   - component: {fileID: 1413401286}
   - component: {fileID: 1413401285}
+  - component: {fileID: 1413401288}
   m_Layer: 5
   m_Name: ChangeImage
   m_TagString: Untagged
@@ -6219,6 +6226,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413401283}
   m_CullTransparentMesh: 0
+--- !u!114 &1413401288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413401283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d125c24f41a3d5d43b56985ab0c4afd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TPSCamera: {fileID: 97773439}
+  FPSCamera: {fileID: 1402495467}
+  Cinemachine: {fileID: 2027994880}
+  aimImage: {fileID: 909840386}
 --- !u!4 &1423607876 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8489914767525216376, guid: f46ffb04ebb50d74abb4be8d374611aa,
