@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Cinemachine;
 using AudioSource = UnityEngine.AudioSource;
 
@@ -28,7 +28,7 @@ public class PlayerControllerV2 : MonoBehaviour
     private bool CamTrigger = false;
     private AudioSource sound;
     private float Rotation;
-    private float CD = 0.5f;
+    private float CD = 0.2f;
 
     // Start is called before the first frame update
     void Start()
@@ -79,23 +79,19 @@ public class PlayerControllerV2 : MonoBehaviour
         {
             FindObjectOfType<ChangeCameraView>().ChangeToTPSAnimation();
         }
+        CD += Time.deltaTime;
+        CD = Mathf.Clamp(CD, 0.0f, 101.0f);
         if (isStopped && Input.GetMouseButtonDown(0))
         {
-            if (CD > 1.0f)
-            {
-                Shooting();
-            }
-            else
-            {
-                CD += Time.deltaTime;
-                CD = Mathf.Clamp(CD, 0.0f, 101.0f);
-            }
-            
+            Shooting();
         }
     }
 
     public void Shooting()
     {
+        if (CD < 0.2f)
+            return;
+
         Vector3 begin;
         Camera camera;
         if (TPSCamera.enabled)
