@@ -17,8 +17,6 @@ public class StopArea : MonoBehaviour
         size = new Vector3(Mathf.Abs(size.x), Mathf.Abs(size.y), Mathf.Abs(size.z));
         Vector3 enemySize = Quaternion.Euler(enemyRotation) * Vector3.Scale(enemyPrefabs.GetComponent<BoxCollider>().size, enemyPrefabs.transform.localScale);
         enemySize = new Vector3(Mathf.Abs(enemySize.x), Mathf.Abs(enemySize.y), Mathf.Abs(enemySize.z));
-        Debug.Log("size: "+ size);
-        Debug.Log("enemySize: " + enemySize);
         Vector3 pos = spawner.transform.position;
         startX = pos.x - size.x / 2 + enemySize.x / 2;
         startZ = pos.z - size.z / 2 + enemySize.z / 2;
