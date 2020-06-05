@@ -20,8 +20,10 @@ public class BulletControl : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Plank"))
+        if (other.gameObject.CompareTag("Plank")) {
+            PlayerControllerV2.Kill++;
             Destroy(other.gameObject);
+        }
         Destroy(gameObject);
     }
 

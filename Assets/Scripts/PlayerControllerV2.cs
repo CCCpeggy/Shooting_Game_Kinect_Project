@@ -20,6 +20,7 @@ public class PlayerControllerV2 : MonoBehaviour
     public GameObject respawnHint;
     public Transform firePoint;
     public GameObject bullet;
+    public static int Kill = 0;
     
     private Vector2 Movement;
     private float xRotation;

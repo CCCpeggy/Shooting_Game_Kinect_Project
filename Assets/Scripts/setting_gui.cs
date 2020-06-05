@@ -22,6 +22,7 @@ public class setting_gui : MonoBehaviour
     private GameObject miniMap;
     private GameObject settingMenu;
     private GameObject TimeText;
+    private GameObject killText;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class setting_gui : MonoBehaviour
         miniMap = gameObject.transform.GetChild(0).gameObject;
         settingMenu = gameObject.transform.GetChild(1).gameObject;
         TimeText = gameObject.transform.GetChild(2).gameObject;
+        killText = gameObject.transform.GetChild(6).GetChild(0).gameObject;
         //startCountDown(15.0f, demoTime, 10);
         startCount();
         showUI();
@@ -95,8 +97,10 @@ public class setting_gui : MonoBehaviour
             int mm = (int)passTime / 60;
             int ss = (int)passTime % 60;
             int sss = (int)(passTime * 100) - (mm * 60 + ss) * 100;
-            TimeText.GetComponent<Text>().text = mm + ":" + ss + "'" + sss;
+            TimeText.GetComponent<Text>().text = string.Format("{0:00}: {1:00}' {2:00}", mm, ss, sss);
         }
+        Debug.Log(PlayerControllerV2.Kill);
+        killText.GetComponent<Text>().text = PlayerControllerV2.Kill.ToString();
     }
     void showUI()
     {
