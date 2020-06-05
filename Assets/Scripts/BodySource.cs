@@ -5,6 +5,7 @@ using Windows.Kinect;
 using Cinemachine;
 using Joint = Windows.Kinect.Joint;
 using Vector4 = UnityEngine.Vector4;
+using UnityEngine.UI;
 
 public class BodySource : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class BodySource : MonoBehaviour
     public GameObject PlayerObject;
     public float rotateSensitivityX;
     public float rotateSensitivityY;
+    public bool isTracked = false;
+    public Image detectedImg;
+
 
     private BodySourceManager _bodyManager;
     private Dictionary<ulong, GameObject> _bodies = new Dictionary<ulong, GameObject>();
@@ -59,6 +63,8 @@ public class BodySource : MonoBehaviour
             if (body != null && body.IsTracked)
             {
                 Boolean isFirstCreate = false;
+                isTracked = true;
+                detectedImg.color = Color.green;
                 if (!_bodies.ContainsKey(body.TrackingId))
                 {
                     _bodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
@@ -66,6 +72,16 @@ public class BodySource : MonoBehaviour
                 }
                 RefreshBodyObject(body, _bodies[body.TrackingId], isFirstCreate);
             }
+            else
+            {
+                isTracked = false;
+                detectedImg.color = Color.red;
+            }
+        }
+        else
+        {
+            isTracked = false;
+            detectedImg.color = Color.red;
         }
         /*
         foreach (Body body in data)
@@ -122,7 +138,7 @@ public class BodySource : MonoBehaviour
                 else
                 {
                     Vector3 difference = _oldLeftHandPosition - jointObject.position;
-                    if (body.HandLeftState == HandState.Closed)
+                    if (body.HandLeftState == HandState.Closed && FindObjectOfType<PlayerControllerV2>().isStopped)
                     {
                         //LeftHandObject.transform.Rotate(Vector3.down * difference.x * rotateSensitivityY, Space.World);
                         //LeftHandObject.transform.Rotate(Vector3.right * difference.y * rotateSensitivityX, Space.Self);

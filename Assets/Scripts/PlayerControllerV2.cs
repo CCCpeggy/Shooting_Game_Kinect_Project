@@ -21,12 +21,14 @@ public class PlayerControllerV2 : MonoBehaviour
     public Transform firePoint;
     public GameObject bullet;
     public static int Kill = 0;
+    public AudioSource shootSource;
     
     private Vector2 Movement;
     private float xRotation;
     private bool CamTrigger = false;
     private AudioSource sound;
     private float Rotation;
+    private float CD = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +37,7 @@ public class PlayerControllerV2 : MonoBehaviour
         // Cursor.visible = false;
         sound = GameObject.Find("ThirdPersonCam").GetComponent<AudioSource>();
         sound.clip = backgroundMusic;
-        sound.volume = 0.5f;
+        sound.volume = 1.0f;
         sound.Play();
         Movement = new Vector2(1, 0);
     }
@@ -58,11 +60,13 @@ public class PlayerControllerV2 : MonoBehaviour
         isStopped = false;
         for (int i = 0; i < 4; i++)
         {
-            if (StopArea[i].GetComponent<StopArea>().isShooting) isStopped = true;
+            if (StopArea[i].GetComponent<StopArea>().isShooting) 
+                isStopped = true;
         }
-        
+        Debug.Log("isStopped: " + isStopped);
+        Debug.Log("Alive: " + Alive);
         // Computer Control
-        if (isStopped)
+        if (isStopped && Alive)
         {
             FindObjectOfType<ChangeCameraView>().ChangeToFPSAnimation();
 
@@ -77,7 +81,16 @@ public class PlayerControllerV2 : MonoBehaviour
         }
         if (isStopped && Input.GetMouseButtonDown(0))
         {
-            Shooting();
+            if (CD > 1.0f)
+            {
+                Shooting();
+            }
+            else
+            {
+                CD += Time.deltaTime;
+                CD = Mathf.Clamp(CD, 0.0f, 101.0f);
+            }
+            
         }
     }
 
@@ -102,6 +115,8 @@ public class PlayerControllerV2 : MonoBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             Debug.DrawLine(ray.origin, hit.point, Color.red, 0.1f, true);
+            CD = 0;
+            shootSource.Play();
 
             Instantiate(bullet, firePoint.position, Quaternion.identity)
                 .gameObject.GetComponent<BulletControl>().target = hit.point;
@@ -198,7 +213,7 @@ public class PlayerControllerV2 : MonoBehaviour
     public void Dead()
     {
         anim.SetTrigger("Death");
-        Alive = !Alive;
+        Alive = false;
     }
 
     public void ShowRespawnHint()
@@ -245,7 +260,6 @@ public class PlayerControllerV2 : MonoBehaviour
         {
         }
     }
-
 
     public void Respawn()
     {
